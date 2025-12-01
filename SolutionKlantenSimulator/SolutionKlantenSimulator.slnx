@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="KlantenSimulatorBL/KlantenSimulatorBL.csproj" />
+  <Project Path="KlantenSimulatorDL/KlantenSimulatorDL.csproj" />
+  <Project Path="KlantenSimulatorUI_WPF/KlantenSimulatorUI_WPF.csproj" />
+  <Project Path="KlantenSimulatorUtils/KlantenSimulatorUtils.csproj" />
+  <Project Path="KlantenSimulator_ConsoleApp/KlantenSimulator_ConsoleApp.csproj" />
+</Solution>
