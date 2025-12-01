@@ -5,7 +5,7 @@ using System.Text;
 
 namespace KlantenSimulatorDL.Lezers
 {
-    public class BestandsLezer :IBestandsLezer
+    public class BestandsLezer
     {
     }
 }
