@@ -7,13 +7,13 @@ namespace KlantenSimulatorDL.Lezers
 {
     public class BestandsLezer
     {
-        private ITxtNaamLezer txtNaamLezer;
+        private INaamLezer txtNaamLezer;
         private IAdresLezer txtAdresLezer;
 
-        public BestandsLezer(ITxtNaamLezer txtNaamLezer, IAdresLezer txtAdresLezer)
+        public BestandsLezer(INaamLezer naamLezer, IAdresLezer adresLezer)
         {
-            this.txtNaamLezer = txtNaamLezer;
-            this.txtAdresLezer = txtAdresLezer;
+            this.txtNaamLezer = naamLezer;
+            this.txtAdresLezer = adresLezer;
         }
     }
 }

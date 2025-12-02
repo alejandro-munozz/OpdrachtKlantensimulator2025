@@ -8,6 +8,28 @@ var builder = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
 var configuration = builder.Build();
+string padStraten = configuration.GetSection($"BestandsLezers:BEL")["padStraten"];
+var correcteHighways = configuration.GetSection("BestandsLezers:BEL:correcteHighways").Get<string[]>();
+var highwaySet = new HashSet<string>(correcteHighways);
+var skipNamen = configuration.GetSection("BestandsLezers:BEL:skipNamen").Get<string[]>();
+var skipNamenSet = new HashSet<string>(skipNamen);
+var verwijderWoordenGemeente = configuration.GetSection("BestandsLezers:BEL:verwijderWoordenGemeente").Get<string[]>();
+var verwijderWoordenGemeenteSet = new HashSet<string>(verwijderWoordenGemeente);
+
+TxtNaamLezer nl = new();
+TxtAdresLezer al = new();
+BestandsLezer bl = new(nl, al);
+
+Dictionary<string, List<string>> gemeenteStraten = al.LeesStraatGemeenteOSM(padStraten, highwaySet, skipNamenSet, verwijderWoordenGemeenteSet);
+
+foreach (string gemeente in gemeenteStraten.Keys)
+{
+    foreach (string straat in gemeenteStraten[gemeente])
+    {
+        Console.WriteLine(gemeente + " " + straat);
+    }
+}
+Console.WriteLine(gemeenteStraten.Keys.Count());
 
 
 
