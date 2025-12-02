@@ -14,7 +14,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="appsettingsconsole.json">
+    <ProjectReference Include="..\KlantenSimulatorDL\KlantenSimulatorDL.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="appsettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

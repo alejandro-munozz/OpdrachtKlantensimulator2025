@@ -5,7 +5,7 @@ using System.Text;
 
 namespace KlantenSimulatorDL.Lezers
 {
-    public class BestandsLezer_Json :IBestandsLezer_Json
+    public class TxtAdresLezer : IAdresLezer
     {
     }
 }
