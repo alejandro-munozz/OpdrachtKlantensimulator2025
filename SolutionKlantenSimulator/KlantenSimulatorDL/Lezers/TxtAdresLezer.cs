@@ -8,6 +8,11 @@ namespace KlantenSimulatorDL.Lezers
 {
     public class TxtAdresLezer : IAdresLezer
     {
+        public (List<string> gemeenten, List<string> straten) LeesAdressenJson(string pad, string mainSectie, string subSectieGemeentes, string subSectieStraten)
+        {
+            throw new NotImplementedException();
+        }
+
         public Dictionary<string, List<string>> LeesStraatGemeenteOSM(string pad, HashSet<string> correcteHighways, HashSet<string> skipWoorden, HashSet<string> verwijderWoorden)
         {
             Dictionary<string, List<string>> gemeenteStraten = new();
@@ -20,10 +25,10 @@ namespace KlantenSimulatorDL.Lezers
                     string[] ss = line.Split(';');
                     string highwayType = ss[2];
                     string gemeente = ss[0];
+                    gemeente = verwijderWoorden.Aggregate(gemeente, (acc, word) => acc.Replace(word, string.Empty));
                     bool containsAny = skipWoorden.Any(x => gemeente.Contains(x));
                     if (correcteHighways.Contains(highwayType) && containsAny == false)
                     {
-                        gemeente = verwijderWoorden.Aggregate(gemeente, (acc, word) => acc.Replace(word, string.Empty));
                         string straat = ss[1];
                         if (!gemeenteStraten.ContainsKey(gemeente))
                         {

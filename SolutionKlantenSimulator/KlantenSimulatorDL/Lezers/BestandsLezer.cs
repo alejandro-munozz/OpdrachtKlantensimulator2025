@@ -5,15 +5,15 @@ using System.Text;
 
 namespace KlantenSimulatorDL.Lezers
 {
-    public class BestandsLezer
+    public class BestandsLezer : IBestandsLezer
     {
-        private INaamLezer txtNaamLezer;
-        private IAdresLezer txtAdresLezer;
+        private INaamLezer naamLezer;
+        private IAdresLezer adresLezer;
 
         public BestandsLezer(INaamLezer naamLezer, IAdresLezer adresLezer)
         {
-            this.txtNaamLezer = naamLezer;
-            this.txtAdresLezer = adresLezer;
+            this.naamLezer = naamLezer;
+            this.adresLezer = adresLezer;
         }
     }
 }

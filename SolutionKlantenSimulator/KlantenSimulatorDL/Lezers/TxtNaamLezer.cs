@@ -7,6 +7,11 @@ namespace KlantenSimulatorDL.Lezers
 {
     public class TxtNaamLezer : INaamLezer
     {
+        public List<string> LeesNamenJson(string pad, string mainSectie, string subSectie)
+        {
+            throw new NotImplementedException();
+        }
+
         public Dictionary<string, int> LeesNamenTxt(List<string> paden, int naamKolom, int aantalKolom, char scheidingsTeken, int rijenOverTeSlaan)
         {
             Dictionary<string, int> namenAantal = new();

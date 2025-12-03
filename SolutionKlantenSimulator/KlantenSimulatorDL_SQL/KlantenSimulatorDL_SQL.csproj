@@ -8,7 +8,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\KlantenSimulatorBL\KlantenSimulatorBL.csproj" />
-    <ProjectReference Include="..\KlantenSimulatorDL\KlantenSimulatorDL_File.csproj" />
   </ItemGroup>
 
 </Project>
