@@ -5,7 +5,7 @@ namespace KlantenSimulatorUtils
 {
     public static class BestandsLezerFactory
     {
-        public static IBestandsLezer GeefBestandsLezerTxt(string naamLezerType, string adresLezerType)
+        public static IBestandsLezer GeefBestandsLezer(string naamLezerType, string adresLezerType)
         {
             return new BestandsLezer(GeefNaamLezer(naamLezerType), GeefAdresLezer(adresLezerType));
         }

@@ -1,5 +1,12 @@
-﻿using KlantenSimulatorBL.Enums;
+﻿using KlantenSimulator_ConsoleApp.ConfigModel;
+using KlantenSimulator_ConsoleApp.ConfigModel.Adressen;
+using KlantenSimulator_ConsoleApp.ConfigModel.Namen;
+using KlantenSimulator_ConsoleApp.ConfigServices;
+using KlantenSimulatorBL.Enums;
+using KlantenSimulatorBL.Interfaces;
 using KlantenSimulatorBL.Managers;
+using KlantenSimulatorDL.Lezers;
+using KlantenSimulatorUtils;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
@@ -9,25 +16,66 @@ namespace KlantenSimulator_ConsoleApp
 {
     internal class Program
     {
-        private DataManager dataManager;
-        private string connectionString;
-        private IConfigurationRoot configuration;
-        private List<string> landen;
+        static DataManager dataManager;
+        static string connectionString;
+        static ConfigService configService = new("appsettings.json");
+        static BestandsLezerConfig bestandsLezerConfig = new();
 
-        private Dictionary<string, int> GeefNaamDataMannen(string land)
+        static void Main(string[] args)
         {
-
+            SetConfig();
+            LeesAlles();
         }
-        private void SetConfig()
+        static void SetConfig()
         {
-            var builder = new ConfigurationBuilder()
-                            .SetBasePath(Directory.GetCurrentDirectory())
-                            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
-            configuration = builder.Build();
-            var landenSecties = configuration.GetSection("BestandsLezers");
-            foreach (var landSectie in landenSecties.GetChildren())
+            bestandsLezerConfig = configService.LoadConfig();
+            var builder = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+            var config = builder.Build();
+            connectionString = config.GetConnectionString("SQLServer");
+            dataManager = new(KlantenSimulatorRepositoryFactory.GeefRepository(connectionString));
+        }
+
+        static void LeesAlles()
+        {
+            foreach (var land in bestandsLezerConfig.BestandsLezers)
             {
-                landen.Add(landSectie.Key);
+                string landCode = land.Key;
+                LandConfig landConfig = land.Value;
+                foreach (var versie in landConfig.Versie)
+                {
+                    int landVersie = versie.Key;
+                    VersieConfig versieConfig = versie.Value;
+                    NamenConfig namen = versieConfig.Namen;
+                    AdressenConfig adressen = versieConfig.Adressen;
+                    int land_versieId = 0;
+                    if (!dataManager.repo.BestaatVersie(landVersie))
+                    {
+                        land_versieId = dataManager.repo.UploadLandMetVersie(landCode, landVersie);
+                        if (namen.json == null)
+                        {
+                            dataManager.bestandsLezer = BestandsLezerFactory.GeefBestandsLezer("txt", "txt");
+                            BestandsLezer bl = (BestandsLezer)dataManager.bestandsLezer;
+                            Dictionary<string, int> mannenNamenAantal = bl.NaamLezer.LeesNamenTxt(namen.txt.padenVoornamenMannen, namen.txt.mannenNaamKolom, namen.txt.mannenAantalKolom, Convert.ToChar(namen.txt.mannenScheidingsteken), namen.txt.mannenRijenOverTeSlaan);
+                            dataManager.repo.UploadNamen(mannenNamenAantal, Geslacht.man, land_versieId, "voornaam");
+                            Dictionary<string, int> vrouwenNamenAantal = bl.NaamLezer.LeesNamenTxt(namen.txt.padenVoornamenVrouwen, namen.txt.vrouwenNaamKolom, namen.txt.vrouwenAantalKolom, Convert.ToChar(namen.txt.vrouwenScheidingsteken), namen.txt.vrouwenRijenOverTeSlaan);
+                            dataManager.repo.UploadNamen(vrouwenNamenAantal, Geslacht.vrouw, land_versieId, "voornaam");
+                            Dictionary<string, int> familieNamenAantal = bl.NaamLezer.LeesNamenTxt(namen.txt.padenFamilienamen, namen.txt.familienaamKolom, namen.txt.familienaamAantalKolom, Convert.ToChar(namen.txt.familienaamScheidingsteken), namen.txt.familienaamRijenOverTeSlaan);
+                            dataManager.repo.UploadNamen(familieNamenAantal, Geslacht.uni, land_versieId, "achternaam");
+                        }
+                        else if (namen.txt == null)
+                        {
+                            dataManager.bestandsLezer = BestandsLezerFactory.GeefBestandsLezer("json", "json");
+                        }
+                        if (adressen.json == null)
+                        {
+                            dataManager.bestandsLezer = BestandsLezerFactory.GeefBestandsLezer("txt", "txt");
+                        }
+                        else if (adressen.txt == null)
+                        {
+                            dataManager.bestandsLezer = BestandsLezerFactory.GeefBestandsLezer("json", "json");
+                        }
+                    }
+                }
             }
         }
 
